@@ -20,6 +20,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	handlerType := (*api.Echo)(nil)
 	methods := map[string]kitex.MethodInfo{
 		"echo": kitex.NewMethodInfo(echoHandler, newEchoEchoArgs, newEchoEchoResult, false),
+		"add":  kitex.NewMethodInfo(addHandler, newEchoAddArgs, newEchoAddResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "api",
@@ -53,6 +54,24 @@ func newEchoEchoResult() interface{} {
 	return api.NewEchoEchoResult()
 }
 
+func addHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*api.EchoAddArgs)
+	realResult := result.(*api.EchoAddResult)
+	success, err := handler.(api.Echo).Add(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newEchoAddArgs() interface{} {
+	return api.NewEchoAddArgs()
+}
+
+func newEchoAddResult() interface{} {
+	return api.NewEchoAddResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -68,6 +87,16 @@ func (p *kClient) Echo(ctx context.Context, req *api.Request) (r *api.Response, 
 	_args.Req = req
 	var _result api.EchoEchoResult
 	if err = p.c.Call(ctx, "echo", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) Add(ctx context.Context, req *api.AddRequest) (r *api.AddResponse, err error) {
+	var _args api.EchoAddArgs
+	_args.Req = req
+	var _result api.EchoAddResult
+	if err = p.c.Call(ctx, "add", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
