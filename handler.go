@@ -6,8 +6,8 @@ import (
 //	"github.com/apache/thrift/lib/go/thrift"
 
 	"context"
-	"log"
-    "io/ioutil"
+//	"log"
+//   "io/ioutil"
 )
 
 // EchoImpl implements the last service interface defined in the IDL.
@@ -67,13 +67,16 @@ func (s *EchoImpl) Add(ctx context.Context, req *api.AddRequest) (resp *api.AddR
     }*/
 
     // Construct the response message
+
+    /*read file
     fileContent, err := ioutil.ReadFile("file.txt")
     if err !=nil{
         return nil, err
     }
     log.Println(string(fileContent))
+    */
 
     resp = &api.AddResponse{Sum: req.First + req.Second}
 
-    return resp, nil
+    return
 }
