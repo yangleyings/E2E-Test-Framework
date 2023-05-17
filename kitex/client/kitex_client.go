@@ -139,7 +139,6 @@ func prepareArgs() *pb.BenchmarkMessage {
 	b := true
 	var i int32 = 100000
 	var i64 int64 = 100000
-	s := "许多往事在眼前一幕一幕，变的那麼模糊"
 
 	var args pb.BenchmarkMessage
 
