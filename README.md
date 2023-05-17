@@ -1,6 +1,5 @@
 # E2E-ServiceMesh-Test-Framework
 ## Go version
-- go@1.15
 - go@1.16
 - go@1.17
 - go@1.18
