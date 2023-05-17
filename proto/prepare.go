@@ -5,7 +5,7 @@ import "reflect"
 func PrepareArgs() *BenchmarkMessage {
 	b := true
 	var i int32 = 100000
-	var s = "许多往事在眼前一幕一幕，变的那麼模糊"
+	var s = "this is a test message"
 
 	var args BenchmarkMessage
 
