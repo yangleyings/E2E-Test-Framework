@@ -14,5 +14,7 @@ go run ./xxx_server.go
 go run ./xxx_client.go -c xxx -n xxx
 ```
 ```-s``` 指定服务端地址
+
 ```-c``` 指定并发数. 客户端会启动n个goroutine并发访问
+
 ```-n``` 指定测试的总请求数
