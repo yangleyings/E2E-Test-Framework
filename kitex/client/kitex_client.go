@@ -139,6 +139,7 @@ func prepareArgs() *pb.BenchmarkMessage {
 	b := true
 	var i int32 = 100000
 	var i64 int64 = 100000
+	s := "this is a test message."
 
 	var args pb.BenchmarkMessage
 
