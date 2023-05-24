@@ -1,4 +1,4 @@
-module github.com/rpcxio/rpcx-benchmark/kitex
+module ServiceMeshTest/kitex
 
 go 1.18
 
