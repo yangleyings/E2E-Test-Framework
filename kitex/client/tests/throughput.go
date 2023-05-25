@@ -35,7 +35,7 @@ var (
 	// rate        = flag.Int("r", 0, "throughputs")
 )
 
-func throughPut() {
+func ThroughPut() {
 	// flag.Parse()
 	// 读取测试用例文件
 	// a := make(map[string]map[string]int)
@@ -158,7 +158,6 @@ func throughPut() {
 			}
 
 		}(i)
-
 	}
 
 	wg.Wait()

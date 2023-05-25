@@ -290,6 +290,8 @@ github.com/prometheus/procfs v0.0.2/go.mod h1:TjEm7ze935MbeOT/UhFTIMYKhuLP4wbCsT
 github.com/prometheus/procfs v0.0.8/go.mod h1:7Qr8sr6344vo1JqZ6HhLceV9o3AJ1Ff+GxbHq6oeK9A=
 github.com/rcrowley/go-metrics v0.0.0-20200313005456-10cdbea86bc0/go.mod h1:bCqnVzQkZxMG4s8nGwiZ5l3QUCyqpo9Y+/ZMZ9VjZe4=
 github.com/rpcxio/libkv v0.5.1-0.20210420120011-1fceaedca8a5/go.mod h1:zHGgtLr3cFhGtbalum0BrMPOjhFZFJXCKiws/25ewls=
+github.com/rpcxio/rpcx-benchmark/kitex v0.0.0-20221207062924-99f3a3f589b5 h1:2Kly0mMOjgY/UKlr5BA2GCFQdYwjE82oFPELWRR4atE=
+github.com/rpcxio/rpcx-benchmark/kitex v0.0.0-20221207062924-99f3a3f589b5/go.mod h1:qS09wLK8C12mVXSoZBPpU5DXXZhTirbzMgAFOSsbfbM=
 github.com/rpcxio/rpcx-benchmark/stat v0.0.0-20220730084343-905328fa1a4b h1:qX7CpQjmQ3lAv3jdKG5ytdvzJ699fQNHI+4BHpn5LWA=
 github.com/rpcxio/rpcx-benchmark/stat v0.0.0-20220730084343-905328fa1a4b/go.mod h1:32f+9tSH8bNuevDaa5azuQlB1PBf6hMEi1XKlf/+qxc=
 github.com/rs/cors v1.7.0/go.mod h1:gFx+x8UowdsKA9AchylcLynDq+nNFfI8FkUZdN/jGCU=

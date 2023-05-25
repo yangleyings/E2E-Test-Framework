@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+
+	"github.com/yangleyings/ServiceMeshTest/kitex/client/tests"
 )
 
 var (
@@ -23,7 +25,6 @@ var (
 func main() {
 	// flag.Parse()
 	// 读取测试用例文件
-	// a := make(map[string]map[string]int)
 	file := os.Args[1]
 	f, err := os.Open(file)
 	if err != nil {
@@ -42,8 +43,10 @@ func main() {
 					testNames = append(testNames, "ThroughPut")
 				}
 				testNames = append(testNames, arg[4:])
+				if arg[4:] == "ThroughPut" {
+					tests.ThroughPut()
+				}
 			}
-			tests.throughPut()
 		}
 		f.Close()
 	}
