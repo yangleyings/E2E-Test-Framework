@@ -1,8 +1,6 @@
 package tests
 
 import (
-	"bufio"
-	"fmt"
 	stdlog "log"
 	"os"
 	"reflect"
@@ -13,55 +11,20 @@ import (
 
 	"github.com/cloudwego/kitex/client"
 	"github.com/gogo/protobuf/proto"
-	"github.com/rpcxio/rpcx-benchmark/kitex/pb/hello"
 	pb "github.com/rpcxio/rpcx-benchmark/proto"
 	"github.com/rpcxio/rpcx-benchmark/stat"
 	"github.com/smallnest/rpcx/log"
+	"github.com/yangleyings/ServiceMeshTest/kitex/pb/hello"
 	"go.uber.org/ratelimit"
 	"golang.org/x/net/context"
 )
 
-var (
-	testNames   []string
-	concurrency = 1                // concurrency
-	total       = 10000            // total requests for all clients
-	host        = "127.0.0.1:8972" // server ip and port
-	pool        = 1                // shared kitex clients
-	rate        = 0                // throughputs
-	// concurrency = flag.Int("c", 1, "concurrency")
-	// total       = flag.Int("n", 10000, "total requests for all clients")
-	// host        = flag.String("s", "127.0.0.1:8972", "server ip and port")
-	// pool        = flag.Int("pool", 1, " shared kitex clients")
-	// rate        = flag.Int("r", 0, "throughputs")
-)
+func ThroughPut(concurrency int, total int, host string, pool int, rate int) {
 
-func ThroughPut() {
 	// flag.Parse()
 	// 读取测试用例文件
 	// a := make(map[string]map[string]int)
-	file := os.Args[1]
-	f, err := os.Open(file)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-	} else {
-		input := bufio.NewScanner(f)
-		for input.Scan() {
-			arg := input.Text()
-			if len(arg) < 3 {
-				fmt.Fprintf(os.Stderr, "Error: Test format is wrong!")
-			}
 
-			sign := arg[:3]
-			switch sign {
-			case "===":
-				if len(arg) < 5 {
-					testNames = append(testNames, "Test 1")
-				}
-				testNames = append(testNames, arg[4:])
-			}
-		}
-		f.Close()
-	}
 	log.SetLogger(log.NewDefaultLogger(os.Stdout, "", stdlog.LstdFlags|stdlog.Lshortfile, log.LvInfo))
 
 	var rl ratelimit.Limiter
@@ -99,7 +62,7 @@ func ThroughPut() {
 	// 每个goroutine的耗时记录
 	d := make([][]int64, n, n)
 
-	// kitex client 使用内置多路复用连接池
+	// The kitex client uses a built-in connection pool with multiplexing.
 	client := hello.MustNewClient("echo",
 		client.WithHostPorts(servers...),
 		client.WithMuxConnection(pool),
@@ -117,11 +80,11 @@ func ThroughPut() {
 	}
 	warmWg.Wait()
 
-	// 栅栏，控制客户端同时开始测试
+	// Fence, control client starts testing at the same time
 	var startWg sync.WaitGroup
-	startWg.Add(n + 1) // +1 是因为有一个goroutine用来记录开始时间
+	startWg.Add(n + 1) // The +1 is because there is a goroutine that records the start time
 
-	// 创建客户端 goroutine 并进行测试
+	// Create the client goroutine and start testing
 	startTime := time.Now().UnixNano()
 	go func() {
 		startWg.Done()
@@ -137,7 +100,7 @@ func ThroughPut() {
 			startWg.Wait()
 
 			for j := 0; j < m; j++ {
-				// 限流，这里不把限流的时间计算到等待耗时中
+				// Current limiting: The current limiting time is not included in the waiting time.
 				if rl != nil {
 					rl.Take()
 				}
@@ -145,7 +108,10 @@ func ThroughPut() {
 				t := time.Now().UnixNano()
 
 				reply, err := client.Say(context.Background(), args)
-				t = time.Now().UnixNano() - t // 等待时间+服务时间，等待时间是客户端调度的等待时间以及服务端读取请求、调度的时间，服务时间是请求被服务处理的实际时间
+				// Waiting time + service time. Waiting time is the waiting time scheduled
+				// by the client and the time read and scheduled by the server.
+				// Service time is the actual time when the request is processed by the service.
+				t = time.Now().UnixNano() - t
 
 				d[i] = append(d[i], t)
 
@@ -161,7 +127,7 @@ func ThroughPut() {
 	}
 
 	wg.Wait()
-	// 统计
+	// Statistic
 	stat.Stats(startTime, total, d, trans, transOK)
 }
 
@@ -174,19 +140,13 @@ func prepareArgs() *pb.BenchmarkMessage {
 	var args pb.BenchmarkMessage
 
 	v := reflect.ValueOf(&args).Elem()
-	// fmt.Println("v:", v)
 	num := v.NumField()
-	// fmt.Println("num:", num)
 	for k := 0; k < num; k++ {
 		field := v.Field(k)
-		// fmt.Println("field", k, ":", field)
 		if !field.CanSet() {
 			continue
 		}
 		if field.Type().Kind() == reflect.Pointer {
-			// fmt.Println("field.Type().Kind():", field.Type().Kind())
-			// fmt.Println("field.Type().Elem():", field.Type().Elem())
-			// fmt.Println("field.Type().Elem().Kind():", field.Type().Elem().Kind())
 			switch v.Field(k).Type().Elem().Kind() {
 			case reflect.Int, reflect.Int32:
 				field.Set(reflect.ValueOf(&i))
@@ -197,10 +157,7 @@ func prepareArgs() *pb.BenchmarkMessage {
 			case reflect.String:
 				field.Set(reflect.ValueOf(&s))
 			}
-			// fmt.Println("field.Type():", field.Type())
-			// fmt.Println("field.Type().Elem():", field.Type().Elem())
 		} else {
-			// fmt.Println("field.Type():", field.Type(), "field.Type().Kind():", field.Type().Kind())
 			switch field.Kind() {
 			case reflect.Int, reflect.Int32, reflect.Int64:
 				field.SetInt(100000)
@@ -209,10 +166,8 @@ func prepareArgs() *pb.BenchmarkMessage {
 			case reflect.String:
 				field.SetString(s)
 			}
-			// fmt.Println("field.Type():", field.Type(), "field.Type().Kind():", field.Type().Kind())
 		}
 
 	}
-	fmt.Println(&args)
 	return &args
 }

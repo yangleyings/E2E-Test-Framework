@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/cloudwego/kitex/server"
-	"github.com/rpcxio/rpcx-benchmark/kitex/pb/hello"
 	pb "github.com/rpcxio/rpcx-benchmark/proto"
 	"github.com/smallnest/rpcx/log"
+	"github.com/yangleyings/ServiceMeshTest/kitex/pb/hello"
 	"golang.org/x/net/context"
 )
 
@@ -41,7 +41,7 @@ func main() {
 	svr := hello.NewServer(
 		new(Hello),
 		server.WithServiceAddr(&net.TCPAddr{IP: ip, Port: port}),
-		server.WithMuxTransport(), // 开启多路复用
+		server.WithMuxTransport(), // Enable multiplexing.
 	)
 	if err := svr.Run(); err != nil {
 		log.Fatalf("server stopped with error:", err)
